@@ -1,0 +1,65 @@
+﻿@page "/login"
+
+@inject IDialogService DialogService
+
+<PageTitle>Log-In</PageTitle>
+
+<MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center" Class="my-5">
+    <MudItem xs="12" Class="mb-4" Style="text-align: center;">
+        <MudImage Src="icon-login.png" Alt="Login Image" Width="100" />
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudCard Class="mx-auto" Style="max-width: 500px;">
+            <MudPaper Class="pa-4">
+                <MudText>Username</MudText>
+                <MudForm>
+                    <MudTextField @bind-Value="username" T="string" Required="true" RequiredError="Username is required!" />
+                </MudForm>
+            </MudPaper>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" Class="mt-4">
+        <MudCard Class="mx-auto" Style="max-width: 500px;">
+            <MudPaper Class="pa-4">
+                <MudText>Password</MudText>
+                <MudForm>
+                    <MudTextField @bind-Value="password" T="string"  Required="true" RequiredError="Password is required!" OnlyValidateIfDirty="true" />
+                </MudForm>
+            </MudPaper>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" Class="mt-4">
+        <div style="display: flex; justify-content: center;">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" OnClick="ValidateLogin">Log-In</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="mx-2">Forgot my Password</MudButton>
+        </div>
+    </MudItem>
+
+    <MudItem xs="12" Class="mt-2">
+        <div style="display: flex; justify-content: center;">
+            <MudButton Variant="Variant.Text" Color="Color.Primary">Or create an account</MudButton>
+        </div>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string username;
+    private string password;
+
+    private async Task ValidateLogin()
+    {
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var parameters = new DialogParameters { ["ContentText"] = "Username and Password are required!" };
+            await DialogService.ShowMessageBox("Validation Error", "Username and Password are required!", "OK", options: options);
+        }
+        else
+        {
+            // Handle the login process here
+        }
+    }
+}
