@@ -10,7 +10,7 @@
     </MudItem>
 
     <MudItem xs="12">
-        <MudCard Class="mx-auto" Style="max-width: 500px;">
+        <MudCard Class="mx-auto" Style="max-width: 500px;" Elevation="50">
             <MudPaper Class="pa-4">
                 <MudText>Username</MudText>
                 <MudForm>
@@ -34,13 +34,13 @@
     <MudItem xs="12" Class="mt-4">
         <div style="display: flex; justify-content: center;">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" OnClick="ValidateLogin">Log-In</MudButton>
-            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="mx-2">Forgot my Password</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/password" Class="mx-2">Forgot my Password</MudButton>
         </div>
     </MudItem>
 
     <MudItem xs="12" Class="mt-2">
         <div style="display: flex; justify-content: center;">
-            <MudButton Variant="Variant.Text" Color="Color.Primary">Or create an account</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/signup">Or create an account</MudButton>
         </div>
     </MudItem>
 </MudGrid>

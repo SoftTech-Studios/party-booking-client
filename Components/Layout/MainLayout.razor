@@ -5,7 +5,7 @@
     <MudAppBar Elevation="1">
         <MudText Typo="Typo.h5" Class="ml-3">BetterLife</MudText>
         <MudSpacer />
-        <MudButton StartIcon="@Icons.Material.Filled.Login" Color="Color.Inherit" OnClick="NavigateToSignIn">Sign-In/Sign-Up</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Login" Href="/login" Color="Color.Inherit" >Sign-In/Sign-Up</MudButton>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu/>
