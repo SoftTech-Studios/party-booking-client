@@ -1,0 +1,15 @@
+﻿@page "/bookpage"
+
+<PageTitle>Book Page</PageTitle>
+
+<MudSelect T="string" Label="Avenue" AnchorOrigin="Origin.BottomCenter">
+    <MudSelectItem Value="@("Kid Play Area")" />
+    <MudSelectItem Value="@("Big Family Event")" />
+    <MudSelectItem Value="@("Themed Kids Party")" />
+</MudSelect>
+
+<MudDatePicker Label="Basic example" @bind-Date="_date" />
+
+@code{
+    private DateTime? _date = DateTime.Today;
+}

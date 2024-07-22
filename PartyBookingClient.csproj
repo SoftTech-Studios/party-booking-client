@@ -19,6 +19,12 @@
 
 
     <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\BookPage.razor" />
       <_ContentIncludedByDefault Remove="Components\Pages\Signup.razor" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Components\Pages\BookPage.razor" />
     </ItemGroup>
 </Project>
