@@ -1,65 +1,88 @@
 ﻿@page "/login"
+@using System.ComponentModel.DataAnnotations
+@using FluentValidation
 
 @inject IDialogService DialogService
+@inject NavigationManager NavManager
 
 <PageTitle>Log-In</PageTitle>
 
-<MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center" Class="my-5">
-    <MudItem xs="12" Class="mb-4" Style="text-align: center;">
-        <MudImage Src="icon-login.png" Alt="Login Image" Width="100" />
-    </MudItem>
-
-    <MudItem xs="12">
-        <MudCard Class="mx-auto" Style="max-width: 500px;" Elevation="50">
-            <MudPaper Class="pa-4">
-                <MudText>Username</MudText>
-                <MudForm>
-                    <MudTextField @bind-Value="username" T="string" Required="true" RequiredError="Username is required!" />
-                </MudForm>
-            </MudPaper>
-        </MudCard>
-    </MudItem>
-
-    <MudItem xs="12" Class="mt-4">
-        <MudCard Class="mx-auto" Style="max-width: 500px;">
-            <MudPaper Class="pa-4">
-                <MudText>Password</MudText>
-                <MudForm>
-                    <MudTextField @bind-Value="password" T="string" Required="true" RequiredError="Password is required!" OnlyValidateIfDirty="true" />
-                </MudForm>
-            </MudPaper>
-        </MudCard>
-    </MudItem>
-
-    <MudItem xs="12" Class="mt-4">
-        <div style="display: flex; justify-content: center;">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" OnClick="ValidateLogin">Log-In</MudButton>
-            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/password" Class="mx-2">Forgot my Password</MudButton>
-        </div>
-    </MudItem>
-
-    <MudItem xs="12" Class="mt-2">
-        <div style="display: flex; justify-content: center;">
-            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/signup">Or create an account</MudButton>
-        </div>
-    </MudItem>
-</MudGrid>
+<MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-center align-center" Style="height: 100vh;">
+    <MudCard Class="mx-auto" Style="width: 600px;">
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12" class="d-flex justify-center">
+                    <img src="icon-login.png" alt="Logo" style="max-width: 150px;" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4" Align="Align.Center">Login</MudText>
+                </MudItem>
+            </MudGrid>
+            <MudForm Model="@model" @ref="@form" Validation="@(orderValidator.ValidateValue)" ValidationDelay="0">
+            <MudTextField @bind-Value="model.Email" For="@(() => model.Email)" Immediate="true" Label="Email" Required="true"
+                          Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
+            <MudTextField @bind-Value="model.Password" For="@(() => model.Password)" Immediate="true" Label="Password"
+                          InputType="InputType.Password" Required="true" />
+            <MudTextField @bind-Value="model.ConfirmPassword" For="@(() => model.ConfirmPassword)" Immediate="true" Label="Confirm Password"
+                          InputType="InputType.Password" Required="true" Validation="@(new Func<string, string>(PasswordMatch))" />
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Login</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/signup"))">Sign-up</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/password"))">Forgot Password</MudButton>
+            </MudCardActions>
+    </MudCard>
+</MudContainer>
 
 @code {
-    private string username;
-    private string password;
+    
+    [Inject] ISnackbar Snackbar { get; set; }
+    
+    MudForm form;
 
-    private async Task ValidateLogin()
+    OrderModelFluentValidator orderValidator = new OrderModelFluentValidator();
+
+    LoginModel model = new LoginModel();
+
+    public class LoginModel
     {
-        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
         {
-            var options = new DialogOptions { CloseOnEscapeKey = true };
-            var parameters = new DialogParameters { ["ContentText"] = "Username and Password are required!" };
-            await DialogService.ShowMessageBox("Validation Error", "Username and Password are required!", "OK", options: options);
+            Snackbar.Add("Submitted!");
         }
-        else
+    }
+
+    private string PasswordMatch(string confirmPassword)
+    {
+        if (confirmPassword != model.Password)
+            return "Passwords do not match.";
+        return null;
+    }
+
+    public class OrderModelFluentValidator : AbstractValidator<LoginModel>
+    {
+        public OrderModelFluentValidator()
         {
-            // Handle the login process here
+            RuleFor(x => x.Email).Cascade(CascadeMode.Stop).NotEmpty().EmailAddress();
+            RuleFor(x => x.Password).NotEmpty().Length(6, 100);
         }
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<LoginModel>.CreateWithOptions((LoginModel)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
     }
 }
