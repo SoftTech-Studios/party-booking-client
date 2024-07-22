@@ -27,6 +27,24 @@
 
 <MudTimePicker Label="Choose Time" @bind-Time="_time" />
 
+<MudExpansionPanels>
+    <MudExpansionPanel Text="Paypal">
+        <MudButton StartIcon="@Icons.Material.Filled.Payment">Paypal Login</MudButton>
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Visa">
+        <MudStack Row="true">
+            <MudTextField T="string" Label="Card Number"/>
+            <MudTextField T="string" Label="Cvc"/>
+        </MudStack>
+        <MudTextField T="string" Label="Cardholder Name"/>
+        <MudDatePicker Label="Expiration Date"></MudDatePicker>
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Google/Apple Pay">
+        <MudButton StartIcon="@Icons.Custom.Brands.Google">Pay with Google Pay</MudButton>
+        <MudButton StartIcon="@Icons.Custom.Brands.Apple">Pay with Apple Pay</MudButton>
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
 @code{
     private DateTime? _date = DateTime.Today;
 
