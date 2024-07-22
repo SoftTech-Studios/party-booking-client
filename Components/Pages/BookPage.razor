@@ -8,8 +8,29 @@
     <MudSelectItem Value="@("Themed Kids Party")" />
 </MudSelect>
 
-<MudDatePicker Label="Basic example" @bind-Date="_date" />
+<MudSelect T="string" Label="Floor" AnchorOrigin="Origin.BottomCenter">
+    <MudSelectItem Value="@("Floor 1")" />
+    <MudSelectItem Value="@("Floor 2")" />
+    <MudSelectItem Value="@("Floor 3")" />
+</MudSelect>
+
+<MudSelect T="string" Label="Catering" AnchorOrigin="Origin.BottomCenter">
+    <MudSelectItem Value="@("MENU 1")" />
+    <MudSelectItem Value="@("MENU 2")" />
+    <MudSelectItem Value="@("MENU 3")" />
+</MudSelect>
+<MudNumericField HideSpinButtons="true" @bind-Value="IntValue" Label="For how many persons?" Variant="Variant.Text" Min="0" Max="200" />
+
+
+
+<MudDatePicker Label="Choose Date" @bind-Date="_date" />
+
+<MudTimePicker Label="Choose Time" @bind-Time="_time" />
 
 @code{
     private DateTime? _date = DateTime.Today;
+
+    public int IntValue { get; set; }
+
+    private TimeSpan? _time = new TimeSpan(00, 45, 00);
 }

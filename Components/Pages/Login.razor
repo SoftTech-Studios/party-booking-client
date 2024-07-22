@@ -23,14 +23,14 @@
                           Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
             <MudTextField @bind-Value="model.Password" For="@(() => model.Password)" Immediate="true" Label="Password"
                           InputType="InputType.Password" Required="true" />
-            <MudTextField @bind-Value="model.ConfirmPassword" For="@(() => model.ConfirmPassword)" Immediate="true" Label="Confirm Password"
-                          InputType="InputType.Password" Required="true" Validation="@(new Func<string, string>(PasswordMatch))" />
             </MudForm>
         </MudCardContent>
         <MudCardActions>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Login</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/signup"))">Sign-up</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/password"))">Forgot Password</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/password"))">Forgot Password</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/signup"))">Or create an account</MudButton>
+
+            
             </MudCardActions>
     </MudCard>
 </MudContainer>
@@ -49,7 +49,6 @@
     {
         public string Email { get; set; }
         public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
     }
 
     private async Task Submit()
@@ -62,12 +61,6 @@
         }
     }
 
-    private string PasswordMatch(string confirmPassword)
-    {
-        if (confirmPassword != model.Password)
-            return "Passwords do not match.";
-        return null;
-    }
 
     public class OrderModelFluentValidator : AbstractValidator<LoginModel>
     {
