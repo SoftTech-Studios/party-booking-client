@@ -2,11 +2,16 @@
 
 <PageTitle>Book Page</PageTitle>
 
-<MudSelect T="string" Label="Avenue" AnchorOrigin="Origin.BottomCenter">
-    <MudSelectItem Value="@("Kid Play Area")" />
-    <MudSelectItem Value="@("Big Family Event")" />
-    <MudSelectItem Value="@("Themed Kids Party")" />
+<MudSelect T="Area" @bind-Value="_area" Label="Avenue" AnchorOrigin="Origin.BottomCenter">
+    <MudSelectItem Value="@Area.KidsPlayArea">Kids Play Area</MudSelectItem>
+    <MudSelectItem Value="@Area.FamilyEvent">Big Family Event</MudSelectItem>
+    <MudSelectItem Value="@Area.ThemedKidsParty">Themed Kids Party</MudSelectItem>
 </MudSelect>
+
+@if (_area != Area.KidsPlayArea)
+{
+    <MudCheckBox T="bool" Label="Catering Required?"></MudCheckBox>
+}
 
 <MudSelect T="string" Label="Floor" AnchorOrigin="Origin.BottomCenter">
     <MudSelectItem Value="@("Floor 1")" />
@@ -46,9 +51,19 @@
 </MudExpansionPanels>
 
 @code{
+
+    private Area _area = Area.KidsPlayArea;
+    
     private DateTime? _date = DateTime.Today;
 
     public int IntValue { get; set; }
 
     private TimeSpan? _time = new TimeSpan(00, 45, 00);
+
+    private enum Area
+    {
+        KidsPlayArea,
+        FamilyEvent,
+        ThemedKidsParty
+    }
 }
