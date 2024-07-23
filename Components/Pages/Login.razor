@@ -7,7 +7,7 @@
 
 <PageTitle>Log-In</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-center align-center" Style="height: 100vh;">
+
     <MudCard Class="mx-auto" Style="width: 600px;">
         <MudCardContent>
             <MudGrid>
@@ -26,19 +26,16 @@
             </MudForm>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Login</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Login</MudButton>
             <MudButton Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/password"))">Forgot Password</MudButton>
             <MudButton Variant="Variant.Text" Color="Color.Primary" Class="ml-auto" OnClick="@(() => NavManager.NavigateTo("/signup"))">Or create an account</MudButton>
-
-            
             </MudCardActions>
     </MudCard>
-</MudContainer>
 
 @code {
-    
+
     [Inject] ISnackbar Snackbar { get; set; }
-    
+
     MudForm form;
 
     OrderModelFluentValidator orderValidator = new OrderModelFluentValidator();
@@ -58,9 +55,10 @@
         if (form.IsValid)
         {
             Snackbar.Add("Submitted!");
+            NavManager.NavigateTo("/booking");
+
         }
     }
-
 
     public class OrderModelFluentValidator : AbstractValidator<LoginModel>
     {

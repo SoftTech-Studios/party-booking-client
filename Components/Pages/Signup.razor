@@ -1,8 +1,8 @@
 ﻿@page "/signup"
 @using FluentValidation
 @using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavManager
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-center align-center" Style="height: 100vh;">
     <MudCard Class="mx-auto" Style="width: 800px;">
         <MudCardContent>
             <MudGrid>
@@ -27,17 +27,16 @@
                     <MudItem xs="12" md="6">
                         <MudTextField @bind-Value="model.Address" For="@(() => model.Address)" Immediate="true" Label="Address" Required="true" />
                         <MudTextField @bind-Value="model.City" For="@(() => model.City)" Immediate="true" Label="City" Required="true" />
-                        <MudTextField @bind-Value="model.Country" For="@(() => model.Country)" Immediate="true" Label="Country" Required="true" />
                         <MudTextField @bind-Value="model.ZipCode" For="@(() => model.ZipCode)" Immediate="true" Label="Zip Code" Required="true" />
+                        <MudTextField @bind-Value="model.Number" For="@(() => model.Number)" Immediate="true" Label="Number" Required="true" />
                     </MudItem>
                 </MudGrid>
             </MudForm>
         </MudCardContent>
         <MudCardActions>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Sign-Up</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Sign Up</MudButton>
         </MudCardActions>
     </MudCard>
-</MudContainer>
 
 @code {
     [Inject] ISnackbar Snackbar { get; set; }
@@ -56,8 +55,8 @@
         public string ConfirmPassword { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
-        public string Country { get; set; }
         public string ZipCode { get; set; }
+        public string Number { get; set; }
     }
 
     private async Task Submit()
@@ -67,6 +66,7 @@
         if (form.IsValid)
         {
             Snackbar.Add("Submitted!");
+            NavManager.NavigateTo("/booking");
         }
     }
 
@@ -86,8 +86,8 @@
             RuleFor(x => x.Password).NotEmpty().Length(6, 100);
             RuleFor(x => x.Address).NotEmpty().Length(1, 100);
             RuleFor(x => x.City).NotEmpty().Length(1, 100);
-            RuleFor(x => x.Country).NotEmpty().Length(1, 100);
-            RuleFor(x => x.ZipCode).NotEmpty().Length(1, 10);
+            RuleFor(x => x.ZipCode).NotEmpty().Length(1, 100);
+            RuleFor(x => x.Number).NotEmpty().Length(1, 10);
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

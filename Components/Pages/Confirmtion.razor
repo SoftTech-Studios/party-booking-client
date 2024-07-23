@@ -1,0 +1,86 @@
+﻿@page "/confirmation"
+@inject NavigationManager Navigation
+
+<PageTitle>Confirmation Page</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h4" Align="Align.Center">Booking Confirmation</MudText>
+            <MudDivider Class="my-4" />
+
+            <MudText Typo="Typo.h5" Align="Align.Center">Booking Number: @BookingDetails.BookingNumber</MudText>
+            <MudDivider Class="my-4" />
+
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudText><b>Venue:</b> @BookingDetails.Area</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText><b>Party of:</b> @BookingDetails.PartySize</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText><b>Floor:</b> @BookingDetails.Floor</MudText>
+                </MudItem>
+                @if (!string.IsNullOrEmpty(BookingDetails.Catering))
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudText><b>Catering:</b> @BookingDetails.Catering</MudText>
+                    </MudItem>
+                }
+                <MudItem xs="12" sm="6">
+                    <MudText><b>Date:</b> @BookingDetails.Date?.ToString("MM/dd/yyyy")</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText><b>Time:</b> @BookingDetails.Time?.ToString(@"hh\:mm")</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText><b>Payment Method:</b> @BookingDetails.PaymentMethod</MudText>
+                </MudItem>
+            </MudGrid>
+            <MudDivider Class="my-4" />
+
+            <div class="d-flex justify-center">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="BackToHome">Back to Home</MudButton>
+            </div>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    public BookingDetailsModel BookingDetails { get; set; } = new BookingDetailsModel();
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var queryParams = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        BookingDetails = new BookingDetailsModel
+            {
+                Area = queryParams.ContainsKey("area") ? queryParams["area"].ToString() : string.Empty,
+                PartySize = queryParams.ContainsKey("partySize") ? queryParams["partySize"].ToString() : string.Empty,
+                Floor = queryParams.ContainsKey("floor") ? queryParams["floor"].ToString() : string.Empty,
+                Date = DateTime.TryParse(queryParams.ContainsKey("date") ? queryParams["date"].ToString() : string.Empty, out var date) ? date : (DateTime?)null,
+                Time = TimeSpan.TryParse(queryParams.ContainsKey("time") ? queryParams["time"].ToString() : string.Empty, out var time) ? time : (TimeSpan?)null,
+                Catering = queryParams.ContainsKey("catering") ? queryParams["catering"].ToString() : null,
+                PaymentMethod = queryParams.ContainsKey("paymentMethod") ? queryParams["paymentMethod"].ToString() : null
+            };
+    }
+
+    private void BackToHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    public class BookingDetailsModel
+    {
+        public string Area { get; set; }
+        public string PartySize { get; set; }
+        public string Floor { get; set; }
+        public string Catering { get; set; }
+        public DateTime? Date { get; set; }
+        public TimeSpan? Time { get; set; }
+        public string PaymentMethod { get; set; }
+        public string BookingNumber { get; set; } = Guid.NewGuid().ToString().Substring(0, 8);
+    }
+}

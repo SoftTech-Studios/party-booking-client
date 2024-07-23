@@ -1,69 +1,112 @@
 ﻿@page "/bookpage"
+@inject NavigationManager Navigation
 
 <PageTitle>Book Page</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudSelect T="Area" @bind-Value="_area" Label="Avenue" AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@Area.KidsPlayArea">Kids Play Area</MudSelectItem>
+                <MudSelectItem Value="@Area.FamilyEvent">Big Family Event</MudSelectItem>
+                <MudSelectItem Value="@Area.ThemedKidsParty">Themed Kids Party</MudSelectItem>
+            </MudSelect>
+        </MudItem>
 
-<MudSelect T="Area" @bind-Value="_area" Label="Avenue" AnchorOrigin="Origin.BottomCenter">
-    <MudSelectItem Value="@Area.KidsPlayArea">Kids Play Area</MudSelectItem>
-    <MudSelectItem Value="@Area.FamilyEvent">Big Family Event</MudSelectItem>
-    <MudSelectItem Value="@Area.ThemedKidsParty">Themed Kids Party</MudSelectItem>
-</MudSelect>
+        <MudItem xs="12" sm="6">
+            <MudSelect T="string" @bind-Value="_partySize" Label="Party of " AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@("0 - 50 persons")" />
+                <MudSelectItem Value="@("50 - 100 persons")" />
+                <MudSelectItem Value="@("100 - 150 persons")" />
+            </MudSelect>
+        </MudItem>
 
-@if (_area != Area.KidsPlayArea)
-{
-    <MudCheckBox T="bool" Label="Catering Required?"></MudCheckBox>
-}
-
-<MudSelect T="string" Label="Floor" AnchorOrigin="Origin.BottomCenter">
-    <MudSelectItem Value="@("Floor 1")" />
-    <MudSelectItem Value="@("Floor 2")" />
-    <MudSelectItem Value="@("Floor 3")" />
-</MudSelect>
-
-<MudSelect T="string" Label="Catering" AnchorOrigin="Origin.BottomCenter">
-    <MudSelectItem Value="@("MENU 1")" />
-    <MudSelectItem Value="@("MENU 2")" />
-    <MudSelectItem Value="@("MENU 3")" />
-</MudSelect>
-<MudNumericField HideSpinButtons="true" @bind-Value="IntValue" Label="For how many persons?" Variant="Variant.Text" Min="0" Max="200" />
+        <MudItem xs="12" sm="6">
+            <MudSelect T="string" @bind-Value="_floor" Label="Floor" AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@("Floor 1")" />
+                <MudSelectItem Value="@("Floor 2")" />
+                <MudSelectItem Value="@("Floor 3")" />
+            </MudSelect>
+        </MudItem>
 
 
+        <MudItem xs="12" sm="6">
+            <MudDatePicker Label="Choose Date" @bind-Date="_date" />
+        </MudItem>
 
-<MudDatePicker Label="Choose Date" @bind-Date="_date" />
+        <MudItem xs="12" sm="6">
+            <MudTimePicker Label="Choose Time" @bind-Time="_time" />
+        </MudItem>
 
-<MudTimePicker Label="Choose Time" @bind-Time="_time" />
+        @if (_area != Area.KidsPlayArea)
+        {
+            <MudItem xs="12" sm="6">
+                <MudSelect T="string" @bind-Value="_catering" Label="Catering" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@("MENU 1")" />
+                    <MudSelectItem Value="@("MENU 2")" />
+                    <MudSelectItem Value="@("MENU 3")" />
+                </MudSelect>
+            </MudItem>
+        }
 
-<MudExpansionPanels>
-    <MudExpansionPanel Text="Paypal">
-        <MudButton StartIcon="@Icons.Material.Filled.Payment">Paypal Login</MudButton>
-    </MudExpansionPanel>
-    <MudExpansionPanel Text="Visa">
-        <MudStack Row="true">
-            <MudTextField T="string" Label="Card Number"/>
-            <MudTextField T="string" Label="Cvc"/>
-        </MudStack>
-        <MudTextField T="string" Label="Cardholder Name"/>
-        <MudDatePicker Label="Expiration Date"></MudDatePicker>
-    </MudExpansionPanel>
-    <MudExpansionPanel Text="Google/Apple Pay">
-        <MudButton StartIcon="@Icons.Custom.Brands.Google">Pay with Google Pay</MudButton>
-        <MudButton StartIcon="@Icons.Custom.Brands.Apple">Pay with Apple Pay</MudButton>
-    </MudExpansionPanel>
-</MudExpansionPanels>
+        <MudItem xs="12" sm="12">
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="Paypal">
+                    <MudButton StartIcon="@Icons.Material.Filled.Payment">Paypal Login</MudButton>
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Visa">
+                    <MudStack Row="true">
+                        <MudTextField T="string" Label="Card Number" />
+                        <MudTextField T="string" Label="Cvc" />
+                    </MudStack>
+                    <MudTextField T="string" Label="Cardholder Name" />
+                    <MudDatePicker Label="Expiration Date"></MudDatePicker>
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Google/Apple Pay">
+                    <MudRadioGroup @bind-Value="SelectedOption">
+                        <MudRadio Value="@("Google Pay")" Color="Color.Primary">Pay with Google Pay</MudRadio>
+                        <MudRadio Value="@("Apple Pay")" Color="Color.Primary">Pay with Apple Pay</MudRadio>
+                    </MudRadioGroup>
+                </MudExpansionPanel>
 
-@code{
+            </MudExpansionPanels>
+        </MudItem>
+        <MudItem xs="12" class="d-flex justify-center mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmBooking">Pay Now</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
 
     private Area _area = Area.KidsPlayArea;
-    
+    private string _partySize;
+    private string _floor;
     private DateTime? _date = DateTime.Today;
-
-    public int IntValue { get; set; }
-
     private TimeSpan? _time = new TimeSpan(00, 45, 00);
+    private string _catering;
+    public string SelectedOption { get; set; }
 
     private enum Area
     {
         KidsPlayArea,
         FamilyEvent,
         ThemedKidsParty
+    }
+
+    private void ConfirmBooking()
+    {
+        var queryParams = new Dictionary<string, string>
+        {
+            { "area", _area.ToString() },
+            { "partySize", _partySize ?? string.Empty },
+            { "floor", _floor ?? string.Empty },
+            { "date", _date?.ToString("yyyy-MM-dd") ?? string.Empty },
+            { "time", _time?.ToString(@"hh\:mm") ?? string.Empty },
+            { "catering", _catering ?? string.Empty },
+            { "paymentMethod", SelectedOption ?? string.Empty }
+        };
+
+        var query = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+        Navigation.NavigateTo($"/confirmation?{query}");
     }
 }
