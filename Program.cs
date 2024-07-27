@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using PartyBookingClient.Backend;
 using PartyBookingClient.Components;
 
 namespace PartyBookingClient;
@@ -15,6 +16,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        builder.Services.AddSingleton<DatabaseStore>();
 
         var app = builder.Build();
 

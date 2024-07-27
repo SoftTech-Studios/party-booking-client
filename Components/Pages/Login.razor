@@ -1,9 +1,11 @@
 ﻿@page "/login"
 @using System.ComponentModel.DataAnnotations
 @using FluentValidation
+@using PartyBookingClient.Backend
 
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
+@inject DatabaseStore Database
 
 <PageTitle>Log-In</PageTitle>
 
@@ -19,11 +21,15 @@
                 </MudItem>
             </MudGrid>
             <MudForm Model="@model" @ref="@form" Validation="@(orderValidator.ValidateValue)" ValidationDelay="0">
-            <MudTextField @bind-Value="model.Email" For="@(() => model.Email)" Immediate="true" Label="Email" Required="true"
-                          Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
-            <MudTextField @bind-Value="model.Password" For="@(() => model.Password)" Immediate="true" Label="Password"
-                          InputType="InputType.Password" Required="true" />
+                <MudTextField @bind-Value="model.Email" For="@(() => model.Email)" Immediate="true" Label="Email" Required="true"
+                              Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
+                <MudTextField @bind-Value="model.Password" For="@(() => model.Password)" Immediate="true" Label="Password"
+                              InputType="InputType.Password" Required="true" />
             </MudForm>
+            @if (_wrongPassword)
+            {
+                <MudText Color="Color.Warning">Wrong username or password!</MudText>
+            }
         </MudCardContent>
         <MudCardActions>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Login</MudButton>
@@ -42,6 +48,8 @@
 
     LoginModel model = new LoginModel();
 
+    private bool _wrongPassword = false;
+
     public class LoginModel
     {
         public string Email { get; set; }
@@ -52,10 +60,24 @@
     {
         await form.Validate();
 
+        if (!Database.CheckDetails(model.Email, model.Password))
+        {
+            _wrongPassword = true;
+            return;
+        }
+        
         if (form.IsValid)
         {
             Snackbar.Add("Submitted!");
-            NavManager.NavigateTo("/booking");
+            Database.Login(model.Email);
+            if (model.Email == "admin@playland.com")
+            {
+                NavManager.NavigateTo("/bookingmanagement?isAdmin=true");
+            }
+            else
+            {
+                NavManager.NavigateTo("/booking");
+            }
 
         }
     }

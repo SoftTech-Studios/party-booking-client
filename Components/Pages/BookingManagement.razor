@@ -1,8 +1,114 @@
 @page "/BookingManagement"
-<h3>BookingManagement</h3>
+@using Bogus
 
+@inject NavigationManager Navigation
 
+<MudDataGrid Items="_bookings" ReadOnly="false" EditMode="DataGridEditMode.Cell" EditTrigger="DataGridEditTrigger.Manual">
+    <Columns>
+        <PropertyColumn Property="b => b.Id" Editable="false"/>
+        <PropertyColumn Property="b => b.Name"/>
+        <PropertyColumn Property="b => b.Venue">
+            <EditTemplate>
+                <MudSelect @bind-Value="@context.Item.Venue">
+                    <MudSelectItem Value="@("Kids Play Area")"/>
+                    <MudSelectItem Value="@("Family Event")"/>
+                    <MudSelectItem Value="@("Kids Party")"/>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="b => b.PartySize">
+            <EditTemplate>
+                <MudSelect @bind-Value="@context.Item.PartySize">
+                    <MudSelectItem Value="@("0 - 50")"/>
+                    <MudSelectItem Value="@("50 - 100")"/>
+                    <MudSelectItem Value="@("100 - 150")"/>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="b => b.Floor">
+            <EditTemplate>
+                <MudSelect @bind-Value="@context.Item.Floor">
+                    <MudSelectItem Value="1"/>
+                    <MudSelectItem Value="2"/>
+                    <MudSelectItem Value="3"/>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="b => b.Time">
+            <EditTemplate>
+                <MudTimePicker @bind-Time="@context.Item.Time"/>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="b => b.Date">
+            <EditTemplate>
+                <MudDatePicker @bind-Date="@context.Item.Date"/>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="b => b.PaymentType" Editable="false"/>
+        <TemplateColumn Editable="false">
+            <CellTemplate>
+                <MudButton Color="Color.Warning" OnClick="@(() => _bookings.Remove(context.Item))">Delete</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
 
 @code {
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var queryParams = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        var isAdmin = queryParams["isAdmin"] == "true";
+
+        var bookings = new List<Booking>();
+
+        if (isAdmin)
+        {
+            bookings = new Faker<Booking>()
+                .StrictMode(true)
+                .RuleFor(booking => booking.Id, i => Guid.NewGuid().ToString().Substring(0, 8))
+                .RuleFor(booking => booking.Name, faker => faker.Name.FullName())
+                .RuleFor(booking => booking.Venue, faker => faker.PickRandom("Kids Play Area", "Family Event", "Kids Party"))
+                .RuleFor(booking => booking.PartySize, faker => faker.PickRandom("0 - 50", "50 - 100", "100 - 150"))
+                .RuleFor(booking => booking.Floor, faker => faker.PickRandom(1, 2, 3))
+                .RuleFor(booking => booking.Time, faker => faker.Date.SoonTimeOnly().ToTimeSpan())
+                .RuleFor(booking => booking.Date, faker => faker.Date.FutureDateOnly().ToDateTime(TimeOnly.FromDateTime(DateTime.Now)))
+                .RuleFor(booking => booking.PaymentType, faker => faker.PickRandom("Apple Pay", "Google Pay", "Visa", "Paypal"))
+                .Generate(50);
+        }
+        else
+        {
+
+            var name = new Bogus.DataSets.Name().FullName();
+            
+            bookings = new Faker<Booking>()
+                .StrictMode(true)
+                .RuleFor(booking => booking.Id, i => Guid.NewGuid().ToString().Substring(0, 8))
+                .RuleFor(booking => booking.Name, faker => name)
+                .RuleFor(booking => booking.Venue, faker => faker.PickRandom("Kids Play Area", "Family Event", "Kids Party"))
+                .RuleFor(booking => booking.PartySize, faker => faker.PickRandom("0 - 50", "50 - 100", "100 - 150"))
+                .RuleFor(booking => booking.Floor, faker => faker.PickRandom(1, 2, 3))
+                .RuleFor(booking => booking.Time, faker => faker.Date.SoonTimeOnly().ToTimeSpan())
+                .RuleFor(booking => booking.Date, faker => faker.Date.FutureDateOnly().ToDateTime(TimeOnly.FromDateTime(DateTime.Now)))
+                .RuleFor(booking => booking.PaymentType, faker => faker.PickRandom("Apple Pay", "Google Pay", "Visa", "Paypal"))
+                .GenerateBetween(2, 5);
+        }
+
+        _bookings = bookings.ToList();
+    }
+
+    private List<Booking> _bookings;
     
+    public class Booking
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Venue { get; set; }
+        public string PartySize { get; set; }
+        public int Floor { get; set; }
+        public DateTime? Date { get; set; }
+        public TimeSpan? Time { get; set; }
+        public string PaymentType { get; set; }
+    }
 }

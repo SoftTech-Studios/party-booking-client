@@ -1,7 +1,15 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/profil" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">Profil</MudNavLink>
-    <MudNavLink Href="/booking" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">Booking</MudNavLink>
-    <MudNavLink Href="/contact" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ContactPage">Contact Us</MudNavLink>
+﻿@using PartyBookingClient.Backend
+@inject DatabaseStore Database
+
+<MudNavMenu>
+    @if (!Database.IsAdmin)
+    {
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavLink Href="/contact" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ContactPage">Contact Us</MudNavLink>
+    }
+    @if (Database.IsLoggedIn)
+    {
+        <MudNavLink Href="@(Database.IsAdmin ? "/bookingmanagement?isAdmin=true" : "/bookingmanagement?isAdmin=false")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ManageAccounts">Manage Bookings</MudNavLink>
+    }
 </MudNavMenu>
 

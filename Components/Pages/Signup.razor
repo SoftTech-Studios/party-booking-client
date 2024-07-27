@@ -1,7 +1,9 @@
 ﻿@page "/signup"
 @using FluentValidation
 @using System.ComponentModel.DataAnnotations
+@using PartyBookingClient.Backend
 @inject NavigationManager NavManager
+@inject DatabaseStore Database
 
     <MudCard Class="mx-auto" Style="width: 800px;">
         <MudCardContent>
@@ -65,6 +67,8 @@
 
         if (form.IsValid)
         {
+            Database.AddUser(model.Email, model.Password);
+            Database.Login(model.Email);
             Snackbar.Add("Submitted!");
             NavManager.NavigateTo("/booking");
         }

@@ -5,7 +5,7 @@
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudGrid>
         <MudItem xs="12" sm="6">
-            <MudSelect T="Area" @bind-Value="_area" Label="Avenue" AnchorOrigin="Origin.BottomCenter">
+            <MudSelect T="Area" @bind-Value="_area" Label="Venue" AnchorOrigin="Origin.BottomCenter">
                 <MudSelectItem Value="@Area.KidsPlayArea">Kids Play Area</MudSelectItem>
                 <MudSelectItem Value="@Area.FamilyEvent">Big Family Event</MudSelectItem>
                 <MudSelectItem Value="@Area.ThemedKidsParty">Themed Kids Party</MudSelectItem>
@@ -40,7 +40,7 @@
         @if (_area != Area.KidsPlayArea)
         {
             <MudItem xs="12" sm="6">
-                <MudSelect T="string" @bind-Value="_catering" Label="Catering" AnchorOrigin="Origin.BottomCenter">
+                <MudSelect T="string" @bind-Value="_catering" Label="Catering" AnchorOrigin="Origin.BottomCenter" Required="true">
                     <MudSelectItem Value="@("MENU 1")" />
                     <MudSelectItem Value="@("MENU 2")" />
                     <MudSelectItem Value="@("MENU 3")" />
@@ -49,29 +49,22 @@
         }
 
         <MudItem xs="12" sm="12">
-            <MudExpansionPanels>
-                <MudExpansionPanel Text="Paypal">
-                    <MudButton StartIcon="@Icons.Material.Filled.Payment">Paypal Login</MudButton>
-                </MudExpansionPanel>
-                <MudExpansionPanel Text="Visa">
-                    <MudStack Row="true">
-                        <MudTextField T="string" Label="Card Number" />
-                        <MudTextField T="string" Label="Cvc" />
-                    </MudStack>
-                    <MudTextField T="string" Label="Cardholder Name" />
-                    <MudDatePicker Label="Expiration Date"></MudDatePicker>
-                </MudExpansionPanel>
-                <MudExpansionPanel Text="Google/Apple Pay">
-                    <MudRadioGroup @bind-Value="SelectedOption">
-                        <MudRadio Value="@("Google Pay")" Color="Color.Primary">Pay with Google Pay</MudRadio>
-                        <MudRadio Value="@("Apple Pay")" Color="Color.Primary">Pay with Apple Pay</MudRadio>
-                    </MudRadioGroup>
-                </MudExpansionPanel>
-
-            </MudExpansionPanels>
+            <MudRadioGroup @bind-Value="SelectedOption" >
+                <MudRadio Value="@("Google Pay")" Color="Color.Primary">Pay with Google Pay</MudRadio>
+                <MudRadio Value="@("Apple Pay")" Color="Color.Primary">Pay with Apple Pay</MudRadio>
+                <MudRadio Value="@("Paypal")" Color="Color.Primary">Pay with Paypal</MudRadio>
+                <MudRadio Value="@("Visa")" Color="Color.Primary">Pay with Visa</MudRadio>
+            </MudRadioGroup>
         </MudItem>
         <MudItem xs="12" class="d-flex justify-center mt-4">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmBooking">Pay Now</MudButton>
+            @if(_partySize == null || _floor == null || SelectedOption == null || (_area != Area.KidsPlayArea && _catering == null))
+            {
+                <MudButton Variant="Variant.Filled" Disabled="true">Pay Now</MudButton>
+            } 
+            else
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmBooking">Pay Now</MudButton>
+            }
         </MudItem>
     </MudGrid>
 </MudContainer>
