@@ -10,7 +10,7 @@
         <MudSpacer />
         @if (Database.IsLoggedIn)
         {
-            <MudButton StartIcon="@Icons.Material.Filled.Logout" OnClick="() => Database.Logout()" Color="Color.Inherit" >Logout</MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit" >Logout</MudButton>
         }
         else
         {
@@ -109,4 +109,10 @@
         true => Icons.Material.Rounded.AutoMode,
         false => Icons.Material.Outlined.DarkMode,
     };
+
+    public void Logout()
+    {
+        Database.Logout();
+        Navigation.NavigateTo("/");
+    }
 }
