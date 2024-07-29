@@ -87,6 +87,7 @@
                 .RuleFor(booking => booking.EndTime, faker => faker.Date.SoonTimeOnly().AddHours(1).ToTimeSpan())
                 .RuleFor(booking => booking.Date, faker => faker.Date.FutureDateOnly().ToDateTime(TimeOnly.FromDateTime(DateTime.Now)))
                 .RuleFor(booking => booking.PaymentType, faker => faker.PickRandom("Apple Pay", "Google Pay", "Visa", "Paypal"))
+                .RuleFor(booking => booking.Catering, faker => faker.PickRandom("N/A", "MENU 1", "MENU 2", "MENU 3"))
                 .Generate(50);
 
             bookings.AddRange(Database.GetAllBookings());
