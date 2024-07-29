@@ -32,7 +32,10 @@
                     <MudText><b>Date:</b> @BookingDetails.Date?.ToString("MM/dd/yyyy")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudText><b>Time:</b> @BookingDetails.Time?.ToString(@"hh\:mm")</MudText>
+                    <MudText><b>Start Time:</b> @BookingDetails.Time?.ToString(@"hh\:mm")</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText><b>End Time:</b> @BookingDetails.Time?.ToString(@"hh\:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudText><b>Payment Method:</b> @BookingDetails.PaymentMethod</MudText>
@@ -62,7 +65,6 @@
                 Floor = queryParams.ContainsKey("floor") ? queryParams["floor"].ToString() : string.Empty,
                 Date = DateTime.TryParse(queryParams.ContainsKey("date") ? queryParams["date"].ToString() : string.Empty, out var date) ? date : (DateTime?)null,
                 Time = TimeSpan.TryParse(queryParams.ContainsKey("time") ? queryParams["time"].ToString() : string.Empty, out var time) ? time : (TimeSpan?)null,
-                Catering = queryParams.ContainsKey("catering") ? queryParams["catering"].ToString() : null,
                 PaymentMethod = queryParams.ContainsKey("paymentMethod") ? queryParams["paymentMethod"].ToString() : null
             };
     }
