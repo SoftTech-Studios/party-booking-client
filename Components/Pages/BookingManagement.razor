@@ -85,7 +85,7 @@
         }
         else
         {
-            bookings = Database.UserBookings.ToList();
+            bookings = Database.UserBookings?.ToList() ?? new List<Booking>();
         }
 
         _bookings = bookings.ToList();
