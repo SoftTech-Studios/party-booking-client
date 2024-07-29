@@ -1,7 +1,6 @@
 @page "/BookingManagement"
 @using Bogus
 @using PartyBookingClient.Backend
-@using PartyBookingClient.Backend
 
 @inject NavigationManager Navigation
 @inject DatabaseStore Database
@@ -55,6 +54,14 @@
         </TemplateColumn>
     </Columns>
 </MudDataGrid>
+
+@if (!Database.IsAdmin)
+{
+    <div style="display: flex; justify-content: center;">
+        <MudButton Variant="Variant.Filled" Style="margin: 10px" Href="/bookpage" Color="Color.Primary">New Booking</MudButton>
+    </div>
+}
+
 
 @code {
     protected override void OnInitialized()
