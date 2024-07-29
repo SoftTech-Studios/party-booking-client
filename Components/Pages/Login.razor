@@ -72,11 +72,11 @@
             Database.Login(model.Email);
             if (model.Email == "admin@playland.com")
             {
-                NavManager.NavigateTo("/bookingmanagement?isAdmin=true");
+                NavManager.NavigateTo("/bookingmanagement?isAdmin=true", true);
             }
             else
             {
-                NavManager.NavigateTo("/booking");
+                NavManager.NavigateTo("/booking", true);
             }
 
         }

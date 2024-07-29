@@ -1,7 +1,10 @@
 @page "/BookingManagement"
 @using Bogus
+@using PartyBookingClient.Backend
+@using PartyBookingClient.Backend
 
 @inject NavigationManager Navigation
+@inject DatabaseStore Database
 
 <MudDataGrid Items="_bookings" ReadOnly="false" EditMode="DataGridEditMode.Cell" EditTrigger="DataGridEditTrigger.Manual">
     <Columns>
@@ -73,26 +76,16 @@
                 .RuleFor(booking => booking.PartySize, faker => faker.PickRandom("0 - 50", "50 - 100", "100 - 150"))
                 .RuleFor(booking => booking.Floor, faker => faker.PickRandom(1, 2, 3))
                 .RuleFor(booking => booking.Time, faker => faker.Date.SoonTimeOnly().ToTimeSpan())
+                .RuleFor(booking => booking.EndTime, faker => faker.Date.SoonTimeOnly().AddHours(1).ToTimeSpan())
                 .RuleFor(booking => booking.Date, faker => faker.Date.FutureDateOnly().ToDateTime(TimeOnly.FromDateTime(DateTime.Now)))
                 .RuleFor(booking => booking.PaymentType, faker => faker.PickRandom("Apple Pay", "Google Pay", "Visa", "Paypal"))
                 .Generate(50);
+
+            bookings.AddRange(Database.GetAllBookings());
         }
         else
         {
-
-            var name = new Bogus.DataSets.Name().FullName();
-            
-            bookings = new Faker<Booking>()
-                .StrictMode(true)
-                .RuleFor(booking => booking.Id, i => Guid.NewGuid().ToString().Substring(0, 8))
-                .RuleFor(booking => booking.Name, faker => name)
-                .RuleFor(booking => booking.Venue, faker => faker.PickRandom("Kids Play Area", "Family Event", "Kids Party"))
-                .RuleFor(booking => booking.PartySize, faker => faker.PickRandom("0 - 50", "50 - 100", "100 - 150"))
-                .RuleFor(booking => booking.Floor, faker => faker.PickRandom(1, 2, 3))
-                .RuleFor(booking => booking.Time, faker => faker.Date.SoonTimeOnly().ToTimeSpan())
-                .RuleFor(booking => booking.Date, faker => faker.Date.FutureDateOnly().ToDateTime(TimeOnly.FromDateTime(DateTime.Now)))
-                .RuleFor(booking => booking.PaymentType, faker => faker.PickRandom("Apple Pay", "Google Pay", "Visa", "Paypal"))
-                .GenerateBetween(2, 5);
+            bookings = Database.UserBookings.ToList();
         }
 
         _bookings = bookings.ToList();
@@ -109,6 +102,7 @@
         public int Floor { get; set; }
         public DateTime? Date { get; set; }
         public TimeSpan? Time { get; set; }
+        public TimeSpan? EndTime { get; set; }
         public string PaymentType { get; set; }
     }
 }

@@ -32,10 +32,10 @@
                     <MudText><b>Date:</b> @BookingDetails.Date?.ToString("MM/dd/yyyy")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudText><b>Start Time:</b> @BookingDetails.Time?.ToString(@"hh\:mm")</MudText>
+                    <MudText><b>Start Time:</b> @BookingDetails.StartTime?.ToString(@"hh\:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudText><b>End Time:</b> @BookingDetails.Time?.ToString(@"hh\:mm")</MudText>
+                    <MudText><b>End Time:</b> @BookingDetails.EndTime?.ToString(@"hh\:mm")</MudText>
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudText><b>Payment Method:</b> @BookingDetails.PaymentMethod</MudText>
@@ -64,7 +64,8 @@
                 PartySize = queryParams.ContainsKey("partySize") ? queryParams["partySize"].ToString() : string.Empty,
                 Floor = queryParams.ContainsKey("floor") ? queryParams["floor"].ToString() : string.Empty,
                 Date = DateTime.TryParse(queryParams.ContainsKey("date") ? queryParams["date"].ToString() : string.Empty, out var date) ? date : (DateTime?)null,
-                Time = TimeSpan.TryParse(queryParams.ContainsKey("time") ? queryParams["time"].ToString() : string.Empty, out var time) ? time : (TimeSpan?)null,
+                StartTime = TimeSpan.TryParse(queryParams.ContainsKey("startTime") ? queryParams["startTime"].ToString() : string.Empty, out var startTime) ? startTime : (TimeSpan?)null,
+                EndTime = TimeSpan.TryParse(queryParams.ContainsKey("endTime") ? queryParams["endTime"].ToString() : string.Empty, out var endTime) ? endTime : (TimeSpan?)null,
                 PaymentMethod = queryParams.ContainsKey("paymentMethod") ? queryParams["paymentMethod"].ToString() : null
             };
     }
@@ -81,7 +82,8 @@
         public string Floor { get; set; }
         public string Catering { get; set; }
         public DateTime? Date { get; set; }
-        public TimeSpan? Time { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
         public string PaymentMethod { get; set; }
         public string BookingNumber { get; set; } = Guid.NewGuid().ToString().Substring(0, 8);
     }

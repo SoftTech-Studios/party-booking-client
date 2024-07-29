@@ -1,5 +1,7 @@
 ﻿@page "/bookpage"
+@using PartyBookingClient.Backend
 @inject NavigationManager Navigation
+@inject DatabaseStore Database
 
 <PageTitle>Book Page</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Large">
@@ -30,15 +32,17 @@
 
 
         <MudItem xs="12" sm="6">
-            <MudDatePicker Label="Choose Date" @bind-Date="_date" />
+            <MudDatePicker Label="Choose Date" @bind-Date="_date"
+                           IsDateDisabledFunc="CheckDate"
+                           AdditionalDateClassesFunc="RandomBusyDates"/>
         </MudItem>
 
         <MudItem xs="12" sm="6">
-            <MudTimePicker Label="Start Time" @bind-Time="_time" />
+            <MudTimePicker Label="Start Time" @bind-Time="_startTime" />
         </MudItem>
 
         <MudItem xs="12" sm="6">
-            <MudTimePicker Label="End Time" @bind-Time="_time" />
+            <MudTimePicker Label="End Time" @bind-Time="_endTime" />
         </MudItem>
 
         @if (_area != Area.KidsPlayArea)
@@ -80,7 +84,8 @@
     private string _partySize;
     private string _floor;
     private DateTime? _date = DateTime.Today;
-    private TimeSpan? _time = new TimeSpan(00, 45, 00);
+    private TimeSpan? _startTime = DateTime.Now.TimeOfDay;
+    private TimeSpan? _endTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(2));
     private string _catering;
     public string SelectedOption { get; set; }
 
@@ -99,12 +104,37 @@
             { "partySize", _partySize ?? string.Empty },
             { "floor", _floor ?? string.Empty },
             { "date", _date?.ToString("yyyy-MM-dd") ?? string.Empty },
-            { "time", _time?.ToString(@"hh\:mm") ?? string.Empty },
+            { "startTime", _startTime?.ToString(@"hh\:mm") ?? string.Empty },
+            { "endTime", _endTime?.ToString(@"hh\:mm") ?? string.Empty },
             { "catering", _catering ?? string.Empty },
             { "paymentMethod", SelectedOption ?? string.Empty }
         };
 
+        Database.AddBooking(new BookingManagement.Booking
+        {
+            Date = _date,
+            Floor = int.Parse(_floor.Replace("Floor ", "")),
+            Id = Guid.NewGuid().ToString().Substring(0, 8),
+            Name = Database.Username,
+            PartySize = _partySize,
+            PaymentType = SelectedOption,
+            Time = _startTime,
+            EndTime = _endTime,
+            Venue = _area.ToString()
+        });
+        
         var query = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
         Navigation.NavigateTo($"/confirmation?{query}");
+    }
+
+    public bool CheckDate(DateTime time)
+    {
+        if(time.Date < DateTime.Today) return true;
+        return false;
+    }
+
+    public string RandomBusyDates(DateTime time)
+    {
+        return (Random.Shared.Next(0, 100) > 90 && time > DateTime.Today.Date) ? "yellow-text text-accent-4" : "";
     }
 }
