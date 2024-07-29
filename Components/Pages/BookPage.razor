@@ -42,7 +42,7 @@
         </MudItem>
 
         <MudItem xs="12" sm="6">
-            <MudTimePicker Label="End Time" @bind-Time="_endTime" />
+            <MudTimePicker Label="End Time" @bind-Time="_endTime"/>
         </MudItem>
 
         @if (_area != Area.KidsPlayArea)
@@ -120,7 +120,8 @@
             PaymentType = SelectedOption,
             Time = _startTime,
             EndTime = _endTime,
-            Venue = _area.ToString()
+            Venue = _area.ToString(),
+            Catering = _catering ?? "N/A"
         });
         
         var query = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));

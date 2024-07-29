@@ -47,6 +47,7 @@
             </EditTemplate>
         </PropertyColumn>
         <PropertyColumn Property="b => b.PaymentType" Editable="false"/>
+        <PropertyColumn Property="b => b.Catering" Editable="true"></PropertyColumn>
         <TemplateColumn Editable="false">
             <CellTemplate>
                 <MudButton Color="Color.Warning" OnClick="@(() => _bookings.Remove(context.Item))">Delete</MudButton>
@@ -111,5 +112,6 @@
         public TimeSpan? Time { get; set; }
         public TimeSpan? EndTime { get; set; }
         public string PaymentType { get; set; }
+        public string Catering { get; set; } = "N/A";
     }
 }

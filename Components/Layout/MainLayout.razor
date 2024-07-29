@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using PartyBookingClient.Backend
+@inherits LayoutComponentBase
+@inject DatabaseStore Database
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider/>
@@ -6,7 +8,14 @@
     <MudAppBar Elevation="1">
         <MudText Typo="Typo.h5" Class="ml-3">Playland Pavilion</MudText>
         <MudSpacer />
-        <MudButton StartIcon="@Icons.Material.Filled.Login" Href="/login" Color="Color.Inherit" >Sign-In/Sign-Up</MudButton>
+        @if (Database.IsLoggedIn)
+        {
+            <MudButton StartIcon="@Icons.Material.Filled.Logout" OnClick="() => Database.Logout()" Color="Color.Inherit" >Logout</MudButton>
+        }
+        else
+        {
+            <MudButton StartIcon="@Icons.Material.Filled.Login" Href="/login" Color="Color.Inherit" >Sign-In/Sign-Up</MudButton>
+        }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />

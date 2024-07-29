@@ -32,6 +32,7 @@ public class DatabaseStore
     }
 
     public void Login(string username) => _currentlyLoggedInUser = username;
+    public void Logout() => _currentlyLoggedInUser = "";
     public bool IsAdmin => _currentlyLoggedInUser == "admin@playland.com";
     public bool IsLoggedIn => !string.IsNullOrEmpty(_currentlyLoggedInUser);
     public string? Username => _profiles.GetValueOrDefault(_currentlyLoggedInUser)?.Name;
